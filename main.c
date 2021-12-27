@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include "graph.h"
 
-void build_graph_cmd(pnode head, int size);
-char add_edges_to_node(pnode head, int id);
+void build_graph_cmd(pnode *head, int size);
+void add_edges_to_node(pnode *head, pnode *node, int id, char *ch);
 void insert_node_cmd(pnode *head);
 void delete_node_cmd(pnode *head);
 void printGraph_cmd(pnode head); //for self debug
@@ -25,7 +25,7 @@ int main(){
             scanf(" %c",&ch);
             int size = ch - '0';     // size of the graph
             head = (pnode)malloc(sizeof(node));     // allocating memory for the graph's Nodes
-            build_graph_cmd(head, size);  // build graph
+            build_graph_cmd(&head, size);  // build graph
         }
 
     }

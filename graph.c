@@ -4,104 +4,83 @@
 
 
 
-void build_graph_cmd(pnode head, int size){
+void build_graph_cmd(pnode *head, int size){
 
-    
-    int id = 0;
-    if(head == NULL){
-        printf("couldn't allocate memory for head of the graph");
+    // in case the malloc failed, exit
+    if(! *head){
+        printf("Couldn't allocate memory for head Node");
         exit(0);
     }
 
-    pnode ptr = head;
+    node **cpy = head;
+    for(int i = 0; i < size-1; i++){
+        (*cpy)->next = (pnode)malloc(sizeof(node));
+        cpy = &((*cpy)->next);
+    }
+
+    node *ptr = *head;
+    node *next;
 
     for (int i = 0; i < size; i++)
     {
-        (*ptr).node_num = id;       // node id
-        (*ptr).next = (pnode)malloc(sizeof(node));  // allocating memory
-        if ((*ptr).next == NULL)
-        {
-            exit(0);
-        }
-        id++;
-        ptr = ptr->next;        // move the pointer to the next Node
+        if (i > 2)
+            {
+                next = NULL;
+            }
+        else{ 
+                next = (*ptr).next;
+            }
+    
+        
+        (*ptr).node_num = i;
+        (*ptr).next = next;
+        (*ptr).edges = NULL;
+        
+        ptr = ptr->next;
+        
     }
 
-
+    node *ptr2 = *head;
     char ch;
     scanf(" %c", &ch);
     while (ch == 'n')
     {
         scanf(" %c", &ch);
-        int id = ch - '0';
-        ch = add_edges_to_node(head, id);      
+        int node_id = ch - '0';
+        add_edges_to_node(head,&ptr2, node_id, &ch);
     }
     
-    return;
 }
 
 
+void add_edges_to_node(pnode *head, pnode *node, int id, char *ch){
 
-char add_edges_to_node(pnode head, int id){
+    scanf(" %c", ch);
 
-    char ch = ' ';
-    pedge edge;
-    while (ch != 'n')
-    {
-        
     
-    
-        scanf(" %c", &ch);
-
-        if (ch < '0' || ch > '9')
+    edge *edges = (pedge)malloc(sizeof(edge));
+    (*node)->edges = edges;
+    while (!(*ch < '0') && !(*ch > '9'))
+    { 
+        int dest = *ch - '0';
+        pnode dst = *head;
+        while ((*dst).node_num != dest)
         {
-            return ch;
+            dst = (*dst).next;
         }
         
-        int dest = ch - '0';
-        pnode d = head;
-        while ((*d).node_num != dest)
-        {
-            d = d->next;
-        }
+        scanf(" %c", ch);
+        int weight = *ch - '0';
         
-        scanf(" %c", &ch);
-        int weight = ch - '0';
-        
-       
-        //edge = (*ptr).edges;
-
-    
-        edge = (pedge)malloc(sizeof(edge));
-        (*edge).endpoint = d;
-        (*edge).weight = weight;
-        (*edge).next = NULL;
-    
-         // the desired node
-        pnode ptr = head;
-        while ((*ptr).node_num != id)
-        {
-            ptr = ptr->next;
-        }
-
-
-
-
-
-
-
-        scanf(" %c", &ch);
-
+        (*edges).endpoint = dst;
+        (*edges).weight = weight;
+        (*edges).next = (pedge)malloc(sizeof(edge));
+        edges = (*edges).next;
+        scanf(" %c", ch);
     }
 
-    return 'n';
-
-
-
-
-
-
 }
+
 
 
 void printGraph_cmd(pnode head){
