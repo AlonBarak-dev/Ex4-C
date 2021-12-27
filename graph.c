@@ -4,7 +4,7 @@
 
 
 
-char build_graph_cmd(pnode *head, int size){
+void build_graph_cmd(pnode *head, int size, char *ch){
 
     // in case the malloc failed, exit
     if(! *head){
@@ -43,21 +43,19 @@ char build_graph_cmd(pnode *head, int size){
     }
 
     node *ptr2;
-    char ch;
-    scanf(" %c", &ch);
-    while (ch == 'n')
+    scanf(" %c", ch);
+    while (*ch == 'n')
     {
         ptr2 = *head;
-        scanf(" %c", &ch);
-        int node_id = ch - '0';
+        scanf(" %c", ch);
+        int node_id = *ch - '0';
         while ((*ptr2).node_num != node_id)
         {
             ptr2 = (*ptr2).next;
         }
         
-        add_edges_to_node(head, &ptr2, node_id, &ch);
+        add_edges_to_node(head, &ptr2, node_id, ch);
     }
-    return ch;
     
 }
 
@@ -66,13 +64,20 @@ void add_edges_to_node(pnode *head, pnode *node, int id, char *ch){
 
     scanf(" %c", ch);
 
+    int counter = 0;
+    edge *edges;
     
-    edge *edges = (pedge)malloc(sizeof(edge));
-    
-    
-    (*node)->edges = edges;
     while (!(*ch < '0') && !(*ch > '9'))
     { 
+        if (counter == 0)
+        {
+            edges = (pedge)malloc(sizeof(edge));
+            (*node)->edges = edges;
+        }
+        else{
+            edges = (pedge)malloc(sizeof(edge));
+        }
+        
         int dest = *ch - '0';
         pnode dst = *head;
         while ((*dst).node_num != dest)
@@ -85,15 +90,23 @@ void add_edges_to_node(pnode *head, pnode *node, int id, char *ch){
         
         (*edges).endpoint = dst;
         (*edges).weight = weight;
-        (*edges).next = (pedge)malloc(sizeof(edge));
+        (*edges).next = NULL;
         edges = (*edges).next;
-        scanf(" %c", ch);
+        if(scanf(" %c", ch) == EOF){
+            break;
+        }
+        counter++;
     }
-
 }
 
 
 void deleteGraph_cmd(pnode *head){
+
+    if (! *head)
+    {
+        return;
+    }
+    
 
     pnode * nodes = head;
     pedge * edges = NULL;
@@ -119,12 +132,11 @@ void deleteGraph_cmd(pnode *head){
 }
 
 
-void insert_node_cmd(pnode *head){
+void insert_node_cmd(pnode *head, char *ch){
 
-    char ch;
     pnode ptr2 = *head;
-    scanf(" %c", &ch);
-    int node_id = ch - '0';
+    scanf(" %c", ch);
+    int node_id = *ch - '0';
     while ((*ptr2).node_num != node_id && (*ptr2).next != NULL)
     {
         ptr2 = (*ptr2).next;
@@ -138,7 +150,7 @@ void insert_node_cmd(pnode *head){
     else{
         free((*ptr2).edges);
     }
-    add_edges_to_node(head, &ptr2, node_id, &ch);
+    add_edges_to_node(head, &ptr2, node_id, ch);
 
 }
 
@@ -151,7 +163,7 @@ void printGraph_cmd(pnode head){
     while(ptr != NULL){
         edges = (*ptr).edges;
         printf("node number: %d\n", ptr->node_num);
-        while (edges->endpoint != NULL)
+        while (edges != NULL)
         {
             printf("dest: %d\n", edges->endpoint->node_num);
             printf("weight : %d\n", edges->weight);

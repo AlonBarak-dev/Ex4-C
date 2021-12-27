@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include "graph.h"
 
-char build_graph_cmd(pnode *head, int size);
+void build_graph_cmd(pnode *head, int size, char *ch);
 void add_edges_to_node(pnode *head, pnode *node, int id, char *ch);
-void insert_node_cmd(pnode *head);
+void insert_node_cmd(pnode *head, char *ch);
 void delete_node_cmd(pnode *head);
 void printGraph_cmd(pnode head); //for self debug
 void deleteGraph_cmd(pnode* head);
@@ -14,11 +14,25 @@ void TSP_cmd(pnode head);
 
 int main(){
 
-    char ch = ' ';
+    char ch = ' '; 
     pnode head = NULL;
 
-    while (scanf(" %c", &ch) != EOF)
+    while (1)
     {
+        if (((ch != 'A') && (ch != 'B') && (ch != 'D') && (ch != 'S') && (ch != 'T')) /*|| ch ==  'z'*/ )
+        {
+            // scanf(" %c", &ch);
+            // if (ch == 'z')
+            // {
+            //     break;
+            // }
+            if (scanf(" %c", &ch) == EOF)
+            {
+                break;
+            }
+            
+        }
+        
         
         // A -> build a new Graph
         if(ch == 'A'){
@@ -30,23 +44,23 @@ int main(){
             }
             
             head = (pnode)malloc(sizeof(node));     // allocating memory for the graph's Nodes
-            ch = build_graph_cmd(&head, size);  // build graph
+            build_graph_cmd(&head, size, &ch);  // build graph
         }
 
         if(ch == 'B'){
-            insert_node_cmd(&head);
+            insert_node_cmd(&head, &ch);
         }
 
         if(ch == 'D'){
-
+            scanf(" %c", &ch);
         }
 
         if(ch == 'T'){
-
+            scanf(" %c", &ch);
         }
 
         if(ch == 'S'){
-
+            scanf(" %c", &ch);
         }
 
     }
@@ -55,7 +69,8 @@ int main(){
 
     printGraph_cmd(head);
     deleteGraph_cmd(&head);
+    free(head);
 
-
+    return 0;
 
 }
