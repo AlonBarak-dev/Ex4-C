@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "graph.h"
 
-void build_graph_cmd(pnode *head, int size);
+char build_graph_cmd(pnode *head, int size);
 void add_edges_to_node(pnode *head, pnode *node, int id, char *ch);
 void insert_node_cmd(pnode *head);
 void delete_node_cmd(pnode *head);
@@ -14,8 +14,8 @@ void TSP_cmd(pnode head);
 
 int main(){
 
-    char ch;
-    pnode head;
+    char ch = ' ';
+    pnode head = NULL;
 
     while (scanf(" %c", &ch) != EOF)
     {
@@ -24,8 +24,29 @@ int main(){
         if(ch == 'A'){
             scanf(" %c",&ch);
             int size = ch - '0';     // size of the graph
+            if (head)
+            {
+                deleteGraph_cmd(&head);
+            }
+            
             head = (pnode)malloc(sizeof(node));     // allocating memory for the graph's Nodes
-            build_graph_cmd(&head, size);  // build graph
+            ch = build_graph_cmd(&head, size);  // build graph
+        }
+
+        if(ch == 'B'){
+            insert_node_cmd(&head);
+        }
+
+        if(ch == 'D'){
+
+        }
+
+        if(ch == 'T'){
+
+        }
+
+        if(ch == 'S'){
+
         }
 
     }
@@ -33,7 +54,7 @@ int main(){
 
 
     printGraph_cmd(head);
-
+    deleteGraph_cmd(&head);
 
 
 

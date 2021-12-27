@@ -4,13 +4,15 @@
 
 
 
-void build_graph_cmd(pnode *head, int size){
+char build_graph_cmd(pnode *head, int size){
 
     // in case the malloc failed, exit
     if(! *head){
         printf("Couldn't allocate memory for head Node");
         exit(0);
     }
+
+    
 
     node **cpy = head;
     for(int i = 0; i < size-1; i++){
@@ -55,6 +57,7 @@ void build_graph_cmd(pnode *head, int size){
         
         add_edges_to_node(head, &ptr2, node_id, &ch);
     }
+    return ch;
     
 }
 
@@ -90,18 +93,63 @@ void add_edges_to_node(pnode *head, pnode *node, int id, char *ch){
 }
 
 
+void deleteGraph_cmd(pnode *head){
+
+    pnode * nodes = head;
+    pedge * edges = NULL;
+    pnode pn = NULL;
+    pedge pe = NULL;
+
+    while ((*nodes) != NULL)
+    {
+        edges = &((*nodes)->edges);
+        while ((*edges) != NULL)
+        {
+            pe = (*edges);
+            edges = &((*edges)->next);
+            free(pe);
+        }
+
+        pn = (*nodes);
+        nodes = &((*nodes)->next);
+        free(pn);
+        
+    }
+
+}
+
+
+void insert_node_cmd(pnode *head){
+
+    char ch;
+    pnode ptr2 = *head;
+    scanf(" %c", &ch);
+    int node_id = ch - '0';
+    while ((*ptr2).node_num != node_id && (*ptr2).next != NULL)
+    {
+        ptr2 = (*ptr2).next;
+    }
+    if ((*ptr2).next == NULL && (*ptr2).node_num != node_id)
+    {
+        (*ptr2).next = (pnode)malloc(sizeof(node));
+        ptr2 = (*ptr2).next;
+        (*ptr2).node_num = node_id;
+    }
+    else{
+        free((*ptr2).edges);
+    }
+    add_edges_to_node(head, &ptr2, node_id, &ch);
+
+}
+
 
 void printGraph_cmd(pnode head){
 
     
     pnode ptr = head;
-    int id = 0;
+    pedge edges;
     while(ptr != NULL){
-        if(id != 0 && ptr->node_num == 0){
-            break;
-        }
-        pedge edges = (*ptr).edges;
-        id++;
+        edges = (*ptr).edges;
         printf("node number: %d\n", ptr->node_num);
         while (edges->endpoint != NULL)
         {
@@ -116,3 +164,4 @@ void printGraph_cmd(pnode head){
 }
 
 
+   
