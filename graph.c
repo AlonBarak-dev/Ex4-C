@@ -40,14 +40,20 @@ void build_graph_cmd(pnode *head, int size){
         
     }
 
-    node *ptr2 = *head;
+    node *ptr2;
     char ch;
     scanf(" %c", &ch);
     while (ch == 'n')
     {
+        ptr2 = *head;
         scanf(" %c", &ch);
         int node_id = ch - '0';
-        add_edges_to_node(head,&ptr2, node_id, &ch);
+        while ((*ptr2).node_num != node_id)
+        {
+            ptr2 = (*ptr2).next;
+        }
+        
+        add_edges_to_node(head, &ptr2, node_id, &ch);
     }
     
 }
@@ -59,6 +65,8 @@ void add_edges_to_node(pnode *head, pnode *node, int id, char *ch){
 
     
     edge *edges = (pedge)malloc(sizeof(edge));
+    
+    
     (*node)->edges = edges;
     while (!(*ch < '0') && !(*ch > '9'))
     { 
@@ -95,7 +103,7 @@ void printGraph_cmd(pnode head){
         pedge edges = (*ptr).edges;
         id++;
         printf("node number: %d\n", ptr->node_num);
-        while (edges != NULL)
+        while (edges->endpoint != NULL)
         {
             printf("dest: %d\n", edges->endpoint->node_num);
             printf("weight : %d\n", edges->weight);

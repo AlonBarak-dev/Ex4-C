@@ -19,7 +19,7 @@ int main(){
 
     while (scanf(" %c", &ch) != EOF)
     {
-
+        
         // A -> build a new Graph
         if(ch == 'A'){
             scanf(" %c",&ch);
