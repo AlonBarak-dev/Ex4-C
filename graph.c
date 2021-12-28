@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 #include "graph.h"
 
 
@@ -220,6 +221,132 @@ void delete_node_cmd(pnode *head, char *ch){
     (*ptr2)->next = ((*ptr2)->next)->next;
     
     free(node);
+}
+
+int min(int a, int b){
+    if(a < b){
+        return a;
+    }
+    else{
+        return b;
+    }
+}
+
+int findMin(int distance[], int visited[], int n){
+
+    int min = INT_MAX;
+    int w = 0;
+    for (int i = 0; i < n; i++)
+    {
+        if ((visited[i] == 0) && (distance[i] < min))
+        {
+            min = distance[i];
+            w = i;
+        }
+        
+    }
+    return w;
+}
+
+
+int dijkstra(pnode head, int src, int dest){
+
+
+    pnode counter = head;
+    int n = 0;
+    int shortestPath = 0;
+    // find the current size of the graph
+    while (counter != NULL)
+    {
+        n++;
+        counter = counter->next;
+    }
+
+    int adjList[n][n];
+    // initialize adj array with infinety values at the begining
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            adjList[i][j] = INT_MAX;
+        }
+    }
+
+    pnode nodes = head;
+    pedge edges = NULL;
+    // insert the weights of the edges into the adj matrix
+    while (nodes != NULL)
+    {
+        edges = (*nodes).edges;
+        while (edges != NULL)
+        {
+            adjList[nodes->node_num][edges->endpoint->node_num] = edges->weight;
+            edges = (*edges).next;
+        }
+        nodes = (*nodes).next;
+    }
+    
+    // initilaize the visited array to zeros at the begining
+    int visited[n];
+    for(int i = 0; i < n; i++){
+        visited[i] = 0;
+    }
+
+    visited[src] = 1;       // mark the source node as visited
+
+    // initilaize the distances from source to all nodes
+    int distance[n];
+    for (int i = 0; i < n; i++)
+    {
+        if (i == src)
+        {
+            distance[i] = 0;
+        }
+        else{
+            distance[i] = adjList[src][i];
+        }
+    }
+
+    int w;
+    for (int i = 0; i < n; i++)
+    {
+        if (i != src)
+        {
+            w = findMin(distance, visited, n);
+            visited[w] = 1;
+
+            for (int v = 0; v < n; v++)
+            {
+                if(visited[v] == 0){
+                    distance[v] = min(distance[v], distance[w] + adjList[w][v]);
+                }
+            }
+            
+            
+        }
+        
+    }
+    
+    shortestPath = distance[dest];
+    return shortestPath;
+}
+
+
+
+
+void shortsPath_cmd(pnode head, char *ch){
+
+    scanf(" %c", ch);
+    int src = *ch - '0';
+
+    scanf(" %c", ch);
+    int dest = *ch - '0';
+
+    int path = dijkstra(head, src, dest);
+
+    printf("Dijsktra shortest path: %d\n", path);
+
+
 }
 
 

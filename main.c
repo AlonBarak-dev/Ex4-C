@@ -8,7 +8,7 @@ void insert_node_cmd(pnode *head, char *ch);
 void delete_node_cmd(pnode *head, char *ch);
 void printGraph_cmd(pnode head); //for self debug
 void deleteGraph_cmd(pnode* head);
-void shortsPath_cmd(pnode head);
+void shortsPath_cmd(pnode head, char *ch);
 void TSP_cmd(pnode head);
 
 
@@ -70,7 +70,7 @@ int main(){
         }
 
         if(ch == 'S'){
-            scanf(" %c", &ch);
+            shortsPath_cmd(head, &ch);
         }
 
     }
