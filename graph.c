@@ -164,6 +164,65 @@ void insert_node_cmd(pnode *head, char *ch){
 }
 
 
+void delete_node_cmd(pnode *head, char *ch){
+
+    scanf(" %c", ch);
+
+    int node_id = *ch - '0';        // the id of the node we want to delete
+
+    pnode *ptr = head, node = NULL;
+    pedge *edges = NULL, pne = NULL;
+    while (*ptr != NULL)     // delete edges to node_id
+    {
+        if((*ptr)->node_num == node_id){     // the desired node 
+            edges = &((*ptr)->edges);
+            while(*edges != NULL){
+                pne = *edges;
+                *edges = (*edges)->next;
+                free(pne);
+            }
+            node = *ptr;
+            ptr = &((*ptr)->next);
+            continue;
+        }
+
+        edges = &((*ptr)->edges);
+        if(*edges != NULL){
+            while ((*edges)->next != NULL)
+            {
+                if ((*(*(*edges)->next).endpoint).node_num == node_id)
+                {
+                    pne = (*edges)->next;
+                    (*edges)->next = (*(*edges)->next).next;
+                    free(pne);
+                    break;
+                }
+                else
+                {
+                    edges = &((*edges)->next);
+                }
+
+            }
+            edges = &((*ptr)->edges);
+            if((*(*edges)->endpoint).node_num == node_id){
+                pne = *edges;
+                *edges = (*edges)->next;
+                free(pne);
+            }
+        }
+        ptr = &((*ptr)->next);
+    }
+    pnode *ptr2 = head;
+    while ((*ptr2)->next->node_num != node_id)
+    {
+        ptr2 = &((*ptr2)->next);
+    }
+    (*ptr2)->next = ((*ptr2)->next)->next;
+    
+    free(node);
+}
+
+
 void printGraph_cmd(pnode head){
 
     

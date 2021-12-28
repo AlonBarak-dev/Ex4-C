@@ -5,7 +5,7 @@
 void build_graph_cmd(pnode *head, int size, char *ch);
 void add_edges_to_node(pnode *head, pnode *node, int id, char *ch);
 void insert_node_cmd(pnode *head, char *ch);
-void delete_node_cmd(pnode *head);
+void delete_node_cmd(pnode *head, char *ch);
 void printGraph_cmd(pnode head); //for self debug
 void deleteGraph_cmd(pnode* head);
 void shortsPath_cmd(pnode head);
@@ -54,11 +54,15 @@ int main(){
         }
 
         if(ch == 'B'){
+            printGraph_cmd(head);
+            printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
             insert_node_cmd(&head, &ch);
         }
 
         if(ch == 'D'){
-            scanf(" %c", &ch);
+            printGraph_cmd(head);
+            printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            delete_node_cmd(&head, &ch);
         }
 
         if(ch == 'T'){
