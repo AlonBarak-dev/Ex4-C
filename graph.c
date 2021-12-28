@@ -63,20 +63,17 @@ void build_graph_cmd(pnode *head, int size, char *ch){
 void add_edges_to_node(pnode *head, pnode *node, int id, char *ch){
 
     scanf(" %c", ch);
-
-    int counter = 0;
     edge *edges;
-    
+    if((*ch <= '9') && (*ch >= '0')){
+        edges = (pedge)malloc(sizeof(edge));
+        (*node)->edges = edges;
+    }
+    else{
+        (*node)->edges = NULL;  //dont have edges
+        return;
+    }
     while (!(*ch < '0') && !(*ch > '9'))
     { 
-        if (counter == 0)
-        {
-            edges = (pedge)malloc(sizeof(edge));
-            (*node)->edges = edges;
-        }
-        else{
-            edges = (pedge)malloc(sizeof(edge));
-        }
         
         int dest = *ch - '0';
         pnode dst = *head;
@@ -90,12 +87,16 @@ void add_edges_to_node(pnode *head, pnode *node, int id, char *ch){
         
         (*edges).endpoint = dst;
         (*edges).weight = weight;
-        (*edges).next = NULL;
-        edges = (*edges).next;
         if(scanf(" %c", ch) == EOF){
             break;
         }
-        counter++;
+        if((*ch <= '9') && (*ch >= '0')){
+            (*edges).next = (pedge)malloc(sizeof(edge));
+            edges = (*edges).next;
+        }
+        else{
+            (*edges).next = NULL;
+        }
     }
 }
 
@@ -135,7 +136,9 @@ void deleteGraph_cmd(pnode *head){
 void insert_node_cmd(pnode *head, char *ch){
 
     pnode ptr2 = *head;
+    pedge *edges = NULL;
     scanf(" %c", ch);
+    pedge pe = NULL;
     int node_id = *ch - '0';
     while ((*ptr2).node_num != node_id && (*ptr2).next != NULL)
     {
@@ -147,8 +150,14 @@ void insert_node_cmd(pnode *head, char *ch){
         ptr2 = (*ptr2).next;
         (*ptr2).node_num = node_id;
     }
-    else{
-        free((*ptr2).edges);
+    else {
+        edges = &((*ptr2).edges);
+        while ((*edges) != NULL)
+        {
+            pe = *edges;
+            edges = &((*edges)->next);
+            free(pe);
+        }
     }
     add_edges_to_node(head, &ptr2, node_id, ch);
 

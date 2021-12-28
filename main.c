@@ -19,8 +19,12 @@ int main(){
 
     while (1)
     {
-        if (((ch != 'A') && (ch != 'B') && (ch != 'D') && (ch != 'S') && (ch != 'T')) /*|| ch ==  'z'*/ )
+        if (((ch != 'A') && (ch != 'B') && (ch != 'D') && (ch != 'S') && (ch != 'T')) /*|| (ch ==  'z')*/ )
         {
+            // if (ch == 'z')
+            // {
+            //     break;
+            // }
             // scanf(" %c", &ch);
             // if (ch == 'z')
             // {
@@ -40,6 +44,8 @@ int main(){
             int size = ch - '0';     // size of the graph
             if (head)
             {
+                printGraph_cmd(head);
+                printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
                 deleteGraph_cmd(&head);
             }
             
@@ -69,7 +75,6 @@ int main(){
 
     printGraph_cmd(head);
     deleteGraph_cmd(&head);
-    free(head);
 
     return 0;
 
