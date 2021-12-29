@@ -224,6 +224,17 @@ void delete_node_cmd(pnode *head, char *ch){
 }
 
 int min(int a, int b){
+
+
+    if (a < 0)
+    {
+        return b;
+    }
+    if (b<0)
+    {
+        return a; 
+    }
+    
     if(a < b){
         return a;
     }
@@ -238,7 +249,7 @@ int findMin(int distance[], int visited[], int n){
     int w = 0;
     for (int i = 0; i < n; i++)
     {
-        if ((visited[i] == 0) && (distance[i] < min))
+        if ((visited[i] == 0) && (distance[i] < min) && (distance[i] >= 0))
         {
             min = distance[i];
             w = i;
@@ -246,6 +257,30 @@ int findMin(int distance[], int visited[], int n){
         
     }
     return w;
+}
+
+int findIndex(pnode head, int id){
+    /*
+        this method receive the id of the node and 
+        return its index in the arrays used in 
+        the below functions
+    */
+   if (id == -1)
+   {
+       return id;
+   }
+   
+   int i = 0;
+   while (head != NULL)
+   {
+       if ((*head).node_num < id)
+       {
+           i++;
+       }
+       head = (*head).next;
+   }
+   return i;
+   
 }
 
 
@@ -274,13 +309,16 @@ int dijkstra(pnode head, int src, int dest){
 
     pnode nodes = head;
     pedge edges = NULL;
+    int x,y;
     // insert the weights of the edges into the adj matrix
     while (nodes != NULL)
     {
         edges = (*nodes).edges;
         while (edges != NULL)
         {
-            adjList[nodes->node_num][edges->endpoint->node_num] = edges->weight;
+            x = findIndex(head,nodes->node_num);
+            y = findIndex(head, edges->endpoint->node_num);
+            adjList[x][y] = edges->weight;
             edges = (*edges).next;
         }
         nodes = (*nodes).next;
@@ -292,33 +330,33 @@ int dijkstra(pnode head, int src, int dest){
         visited[i] = 0;
     }
 
-    visited[src] = 1;       // mark the source node as visited
+    visited[findIndex(head,src)] = 1;       // mark the source node as visited
 
     // initilaize the distances from source to all nodes
     int distance[n];
     for (int i = 0; i < n; i++)
     {
-        if (i == src)
+        if (i == findIndex(head,src))
         {
-            distance[i] = 0;
+            distance[findIndex(head,i)] = 0;
         }
         else{
-            distance[i] = adjList[src][i];
+            distance[findIndex(head,i)] = adjList[findIndex(head,src)][findIndex(head,i)];
         }
     }
 
     int w;
     for (int i = 0; i < n; i++)
     {
-        if (i != src)
+        if (i != findIndex(head,src))
         {
             w = findMin(distance, visited, n);
-            visited[w] = 1;
+            visited[findIndex(head,w)] = 1;
 
             for (int v = 0; v < n; v++)
             {
-                if(visited[v] == 0){
-                    distance[v] = min(distance[v], distance[w] + adjList[w][v]);
+                if(visited[findIndex(head,v)] == 0){
+                    distance[findIndex(head,v)] = min(distance[findIndex(head,v)], distance[findIndex(head,w)] + adjList[findIndex(head,w)][findIndex(head,v)]);
                 }
             }
             
@@ -373,13 +411,16 @@ void dijkstra_path(pnode head, int src, int dest, int *arr){
 
     pnode nodes = head;
     pedge edges = NULL;
+     int x,y;
     // insert the weights of the edges into the adj matrix
     while (nodes != NULL)
     {
         edges = (*nodes).edges;
         while (edges != NULL)
         {
-            adjList[nodes->node_num][edges->endpoint->node_num] = edges->weight;
+            x = findIndex(head,nodes->node_num);
+            y = findIndex(head, edges->endpoint->node_num);
+            adjList[x][y] = edges->weight;
             edges = (*edges).next;
         }
         nodes = (*nodes).next;
@@ -389,22 +430,22 @@ void dijkstra_path(pnode head, int src, int dest, int *arr){
     int visited[n];
     int parents[n];
     for(int i = 0; i < n; i++){
-        visited[i] = 0;
-        parents[i] = -1;
+        visited[findIndex(head,i)] = 0;
+        parents[findIndex(head,i)] = -1;
     }
     
-   parents[src] = -1;
+   parents[findIndex(head,src)] = -1;
     
     // initilaize the distances from source to all nodes
     int distance[n];
     for (int i = 0; i < n; i++)
     {
-        if (i == src)
+        if (i == findIndex(head,src))
         {
-            distance[i] = 0;
+            distance[findIndex(head,i)] = 0;
         }
         else{
-            distance[i] = adjList[src][i];
+            distance[findIndex(head,i)] = adjList[findIndex(head,src)][findIndex(head,i)];
         }
     }
 
@@ -413,15 +454,15 @@ void dijkstra_path(pnode head, int src, int dest, int *arr){
     {
     
         w = findMin(distance, visited, n);
-        visited[w] = 1;
+        visited[findIndex(head,w)] = 1;
 
         for (int v = 0; v < n; v++)
         {
-            if(visited[v] == 0){
-                distance[v] = min(distance[v], distance[w] + adjList[w][v]);
-                if (distance[v] == distance[w] + adjList[w][v])
+            if(visited[findIndex(head,v)] == 0){
+                distance[findIndex(head,v)] = min(distance[findIndex(head,v)], distance[findIndex(head,w)] + adjList[findIndex(head,w)][findIndex(head,v)]);
+                if (distance[findIndex(head,v)] == distance[findIndex(head,w)] + adjList[findIndex(head,w)][findIndex(head,v)])
                 {
-                    parents[v] = w;
+                    parents[findIndex(head,v)] = findIndex(head,w);
                 }
                 
             }
@@ -434,18 +475,18 @@ void dijkstra_path(pnode head, int src, int dest, int *arr){
     }
 
     int ctr = 0;
-    if (visited[dest] == 1)
+    if (visited[findIndex(head,dest)] == 1)
     {   
         int j = dest;
         while(1){
 
-            if(parents[j] == -1){
+            if(parents[findIndex(head,j)] == -1){
                 arr[ctr] = j;
                 break;
             }
             else{
-                arr[ctr] = parents[j];
-                j = parents[j];
+                arr[ctr] = findIndex(head,j);
+                j = parents[findIndex(head,j)];
             }
 
         }
@@ -464,19 +505,18 @@ int min_shortsPath(pnode head, int v, int visited[], int cities[], int n){
         int dist;
         for (int j = 0; j < n; j++)
         {
-            if (visited[j] == cities[i])
+            if (visited[j] == findIndex(head,cities[i]))
             {
                 visit = 1;      // if we visited the node, dont include him
             }
         }
         if(!visit){     // do only if we not visited the node
-            dist = dijkstra(head,v,cities[i]);
+            dist = dijkstra(head,v,findIndex(head,cities[i]));
             if (dist < min_dist)
             {
                 min_dist = dist;
                 u = cities[i];
             }
-            
         }
     }
     if ((min_dist == INT_MAX)||(min_dist == -2147483644))
@@ -484,7 +524,7 @@ int min_shortsPath(pnode head, int v, int visited[], int cities[], int n){
         u = -1;
     }
     
-    return u;
+    return findIndex(head,u);
 
 }
 
@@ -504,6 +544,18 @@ int allVisited(int visited[], int n){
     
 }
 
+int notIn(int visited[], int id, int p){
+    for (int i = 0; i < p; i++)
+    {
+        if (visited[i] == id)
+        {
+            return 0;
+        }
+        
+    }
+    return 1;
+}
+
 void TSP_cmd(pnode head, char *ch){
 
     pnode counter = head;
@@ -516,30 +568,20 @@ void TSP_cmd(pnode head, char *ch){
     }
 
 
-    int n = 6;
-    int input[n];      // array of input
-
-    // initialize the input needs to visit in, input[0] is the first destination
-    int i = 0;
+    int p;
     scanf(" %c", ch);
-    while((*ch >= '0') && (*ch <= '9')){
-        input[i] = *ch - '0';
+    p = *ch - '0'; 
+    int cities[p];
+    int i = 0;
+
+    while ((*ch >= '0') && (*ch <= '9'))
+    {
         scanf(" %c", ch);
+        cities[i] = *ch - '0';
         i++;
     }
-    for(int j = i; j < n; j++){
-        input[j] = -1;
-    }
-    int p = 0;
-    while(input[p] != -1){     //find the exact number of input
-        p++;
-    }
+    
 
-    int cities[p];
-    for (int j = 0; j < p; j++)
-    {
-        cities[j] = input[j];
-    }
     // now cities contain only the nodes IDs
 
     int min_dist = INT_MAX;
@@ -553,7 +595,7 @@ void TSP_cmd(pnode head, char *ch){
             visited[j] = 0;
         }
         
-        int v = cities[i];
+        int v = findIndex(head,cities[i]);
         int ctr = 0;
         visited[ctr] = v;      //mark start node as visited
         ctr++;
@@ -572,7 +614,7 @@ void TSP_cmd(pnode head, char *ch){
             {
                 for (int i = 0; i < p; i++)
                 {
-                    if (path[j] == cities[i])
+                    if ((path[j] == cities[i]) && (notIn(visited, *path,p)))
                     {
                         visited[ctr] = *path;       // if we visited in one of the cities during a travel, mark it
                         ctr++;
@@ -585,6 +627,10 @@ void TSP_cmd(pnode head, char *ch){
         }
 
         min_dist = min(min_dist, curr_dist);
+    }
+    if ((min_dist == INT_MAX)||(min_dist == -2147483644))
+    {
+        min_dist = -1;
     }
     
     printf("TSP shortest path: %d\n", min_dist);

@@ -54,14 +54,14 @@ int main(){
         }
 
         if(ch == 'B'){
-            printGraph_cmd(head);
-            printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            // printGraph_cmd(head);
+            // printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
             insert_node_cmd(&head, &ch);
         }
 
         if(ch == 'D'){
-            printGraph_cmd(head);
-            printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            // printGraph_cmd(head);
+            // printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
             delete_node_cmd(&head, &ch);
         }
 
@@ -77,7 +77,7 @@ int main(){
     
 
 
-    printGraph_cmd(head);
+    //printGraph_cmd(head);
     deleteGraph_cmd(&head);
 
     return 0;
