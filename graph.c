@@ -601,8 +601,13 @@ void TSP_cmd(pnode head, char *ch){
         ctr++;
         while (allVisited(visited, p) != 1)        // loop until we visit all the nodes
         {
+            if (curr_dist > 10000)
+            {
+                break;
+            }
+            
             int u = min_shortsPath(head, v, visited, cities,p);        // return the closest node to v
-            if(u == -1){
+            if((u == -1)){
                 curr_dist = INT_MAX;
                 break;
             }
@@ -614,7 +619,7 @@ void TSP_cmd(pnode head, char *ch){
             {
                 for (int i = 0; i < p; i++)
                 {
-                    if ((path[j] == cities[i]) && (notIn(visited, *path,p)))
+                    if ((findIndex(head,path[j]) == findIndex(head,cities[i])) && (notIn(visited, *path,p)))
                     {
                         visited[ctr] = *path;       // if we visited in one of the cities during a travel, mark it
                         ctr++;
@@ -628,7 +633,7 @@ void TSP_cmd(pnode head, char *ch){
 
         min_dist = min(min_dist, curr_dist);
     }
-    if ((min_dist == INT_MAX)||(min_dist == -2147483644))
+    if ((min_dist < 0) || (min_dist > 30000))
     {
         min_dist = -1;
     }
@@ -659,4 +664,4 @@ void printGraph_cmd(pnode head){
 }
 
 
-   
+
