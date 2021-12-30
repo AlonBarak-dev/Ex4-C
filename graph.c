@@ -352,7 +352,7 @@ int findMin(int distance[], int visited[], int n){
         node to src and return its index in the array
     */
     
-    int min = INT_MAX;
+    int min = 100000;
     int w = 0;
     for (int  i = 0; i < n; i++)
     {
@@ -390,7 +390,7 @@ int dijkstra(pnode head, int src, int dest){
     {
         for (int j = 0; j < n; j++)
         {
-            adjList[i][j] = INT_MAX;
+            adjList[i][j] = 100000;
         }
     }
 
@@ -437,7 +437,7 @@ int dijkstra(pnode head, int src, int dest){
     int w;
     for (int i = 0; i < n; i++)
     {
-        w = findIndex(head,findMin(distance, visited, n));
+        w = findMin(distance, visited, n);
         visited[w] = 1;
         for (int v = 0; v < n; v++)
         {
@@ -445,16 +445,11 @@ int dijkstra(pnode head, int src, int dest){
             {
                 distance[v] = min(distance[v], distance[w] + adjList[w][v]);
             }
-            
         }
-        
     }
-    
     
     shortestPath = distance[dest];
     return shortestPath;
-
-
 }
 
 
@@ -503,7 +498,7 @@ void dijkstra_path(pnode head, int src, int dest, int *arr){
     {
         for (int j = 0; j < n; j++)
         {
-            adjList[i][j] = INT_MAX;
+            adjList[i][j] = 100000;
         }
     }
 
@@ -595,7 +590,7 @@ void dijkstra_path(pnode head, int src, int dest, int *arr){
 
 int min_shortsPath(pnode head, int v, int visited[], int cities[], int n){
 
-    int min_dist = INT_MAX;
+    int min_dist = 100000;
     int u = -1;
 
     for (int i = 0; i < n; i++)
@@ -693,7 +688,7 @@ void TSP_cmd(pnode head, char **ch){
         i++;
     }
 
-    int min_dist = INT_MAX;
+    int min_dist = 100000;
     int path[size];
 
     for (int i = 0; i < p; i++)
@@ -724,7 +719,7 @@ void TSP_cmd(pnode head, char **ch){
             
             if ((u == -1))  // if none, dist is INF
             {
-                curr_dist = INT_MAX;
+                curr_dist = 100000;
                 break;
             }
             int dist = dijkstra(head, v, u);    // the weight of the shortest path from v to u
@@ -787,6 +782,10 @@ int shortsPath_array(pnode head, int cities[], int len){
     int sum = 0;
     for (int i = 0; i < len-1; i++)
     {
+        if (sum >= 20000)
+        {
+            return sum;
+        }
         sum += dijkstra(head, findIndex(head,cities[i]), findIndex(head,cities[i+1]));
     }
     return sum;
@@ -841,10 +840,10 @@ void TSP_cmd2(pnode head, char **ch){
         i++;
     }
 
-    int fsum = INT_MAX;
+    int fsum = 100000;
     permute(head, cities, 0, p-1, p, &fsum);
 
-    if ((fsum <= 0) || (fsum > 100000))
+    if ((fsum <= 0) || (fsum > 10000))
     {
         fsum = -1;
     }

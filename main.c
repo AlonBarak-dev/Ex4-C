@@ -18,8 +18,8 @@ void TSP_cmd2(pnode head, char **ch);
 int main(){
 
 
-    char data[1000] = {'\0'};
-    fgets(data,1000,stdin); // gets the input
+    char data[10000] = {'\0'};
+    fgets(data,10000,stdin); // gets the input
     char *ch = data;
     pnode head = NULL;
 
