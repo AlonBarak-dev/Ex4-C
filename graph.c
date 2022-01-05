@@ -32,8 +32,9 @@ void printGraph_cmd(pnode head){
     /*
     printing the graph for self debug reasons
     */
-    pnode ptr = head;
-    pedge edges;
+    pnode ptr = NULL;
+    ptr = head;
+    pedge edges = NULL;
     while (ptr != NULL)
     {
         edges = (*ptr).edges;
@@ -64,7 +65,8 @@ void build_graph_cmd(pnode *head, int size, char **ch){
     }
     
     // allocate memory for all nodes and connect them to each other
-    node **cpy = head;
+    node **cpy = NULL;
+    cpy = head;
     for (int i = 0; i < size-1; i++)
     {
         (*cpy)->next = (pnode)malloc(sizeof(node));
@@ -72,7 +74,7 @@ void build_graph_cmd(pnode *head, int size, char **ch){
     }
 
     node *ptr = *head;
-    node *next;
+    node *next = NULL;
 
     for (int i = 0; i < size; i++)
     {
@@ -92,7 +94,7 @@ void build_graph_cmd(pnode *head, int size, char **ch){
         ptr = ptr->next;    // move to the next node
     }
 
-    node *ptr2;
+    node *ptr2 = NULL;
     while (*chptr == 'n')
     {
         ptr2 = *head;
@@ -114,8 +116,7 @@ void build_graph_cmd(pnode *head, int size, char **ch){
 void add_edges_to_node(pnode *head, pnode *node, int id, char **ch){
 
     char *chptr = *ch;
-    //chptr += 2;
-    edge *edges;
+    edge *edges = NULL;
 
     if ((*chptr <= '9') && (*chptr >= '0'))
     {
@@ -130,7 +131,8 @@ void add_edges_to_node(pnode *head, pnode *node, int id, char **ch){
     while ((*chptr >= '0') && (*chptr <= '9'))
     {
         int dest = toNum(&chptr);   // the dest node
-        pnode dst = *head;
+        pnode dst = NULL;
+        dst = *head;
         while ((*dst).node_num != dest)
         {
             dst = (*dst).next;      // the endpoint node of the edge
@@ -160,15 +162,17 @@ void add_edges_to_node(pnode *head, pnode *node, int id, char **ch){
 void deleteGraph_cmd(pnode *head){
 
 
-    if(!head){      // base case
-        return;
-    }
 
     // initialize pointers
-    pnode *nodes = head;
+    pnode *nodes = NULL;
+    nodes = head;
     pedge *edges = NULL;
     pnode pn = NULL;
     pedge pe = NULL;
+
+     if(!nodes){      // base case
+        return;
+    }
 
     while ((*nodes) != NULL)
     {
@@ -192,7 +196,8 @@ void insert_node_cmd(pnode *head, char **ch){
 
     char *chptr = *ch;
     // initilaize pointers
-    pnode ptr2 = *head;
+    pnode ptr2 = NULL;
+    ptr2 = *head;
     pedge *edges = NULL;
     pedge pe = NULL;
 
@@ -228,8 +233,9 @@ void delete_node_cmd(pnode *head, char **ch){
     char *chptr = *ch;
     int node_id = toNum(&chptr);        // the node we want to delete
 
-    pnode *ptr = head, node = NULL;
+    pnode *ptr = NULL, node = NULL;
     pedge *edges = NULL, pne = NULL;
+    ptr = head;
     while (*ptr != NULL)
     {
         if ((*ptr)->node_num == node_id)        // delete the edges of the node
@@ -328,19 +334,20 @@ int findIndex(pnode head, int id){
         return its index in the arrays used in
         the functions below
     */
-
+   pnode cpy = NULL;        // new
+   cpy = head;
    if (id == -1)
    {
        return id;
    }
    int i = 0;
-   while (head != NULL)
+   while (cpy != NULL)
    {
-       if ((*head).node_num < id)
+       if ((*cpy).node_num < id)
        {
            i++;
        }
-       head = (*head).next;
+       cpy = (*cpy).next;
    }
    return i;
 }
@@ -372,7 +379,8 @@ int findMin(int distance[], int visited[], int n){
 int dijkstra(pnode head, int src, int dest){
 
 
-    pnode counter = head;
+    pnode counter = NULL;
+    counter = head;
     int n = 0;      // number of odes in the graph
 
     int shortestPath = 0;       // the weight of the shortest path from src to dest
@@ -394,9 +402,10 @@ int dijkstra(pnode head, int src, int dest){
         }
     }
 
-    pnode nodes = head;
+    pnode nodes = NULL;
+    nodes = head;
     pedge edges = NULL;
-    int x, y;
+    int x = 0, y = 0;
 
     // insert the weights of the edges into the adj matrix
     while (nodes != NULL)
@@ -434,7 +443,7 @@ int dijkstra(pnode head, int src, int dest){
         }
     }
 
-    int w;
+    int w = 0;
     for (int i = 0; i < n; i++)
     {
         w = findMin(distance, visited, n);
@@ -468,7 +477,7 @@ void shortsPath_cmd(pnode head, char **ch){
 
     int weight = dijkstra(head, src, dest);
 
-    if ((weight > 10000000) || (weight < -10000000))
+    if ((weight > 100000) || (weight < 0))
     {
         weight = -1;
     }
@@ -478,12 +487,10 @@ void shortsPath_cmd(pnode head, char **ch){
     *ch = chptr;
 }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
 
 void swap(int *x, int *y){
-    int temp;
+    int temp = 0;
     temp = *x;
     *x = *y;
     *y = temp;
@@ -506,7 +513,7 @@ int shortsPath_array(pnode head, int cities[], int len){
 
 void permute(pnode head, int cities[], int start, int end, int size, int* fsum){
 
-    int i;
+    int i = 0;
     if (start == end)
     {
         int sum = shortsPath_array(head, cities, size);
@@ -531,8 +538,8 @@ void permute(pnode head, int cities[], int start, int end, int size, int* fsum){
 
 void TSP_cmd2(pnode head, char **ch){
     char *chptr = *ch;
-
-    pnode counter = head;
+    pnode counter = NULL;
+    counter = head;
     int size = 0;       // number of nodes in the graph
 
     // find the current size of the graph
