@@ -162,30 +162,29 @@ void add_edges_to_node(pnode *head, pnode *node, int id, char **ch){
 void deleteGraph_cmd(pnode *head){
 
 
-
-    // initialize pointers
-    pnode *nodes = NULL;
-    nodes = head;
-    pedge *edges = NULL;
-    pnode pn = NULL;
-    pedge pe = NULL;
-
-     if(!nodes){      // base case
+    if(!head){      // base case
         return;
     }
 
-    while ((*nodes) != NULL)
+    // initialize pointers
+    pnode nodes = NULL;
+    nodes = *head;
+    pedge edges = NULL;
+    pnode pn = NULL;
+    pedge pe = NULL;
+
+    while (nodes != NULL)
     {
-        edges = &((*nodes)->edges);  // the edges of the node
-        while ((*edges) != NULL)
+        edges = (nodes)->edges;  // the edges of the node
+        while (edges != NULL)
         {
-            pe = *edges;
-            edges = &((*edges)->next);
+            pe = edges;
+            edges = (edges)->next;
             free(pe);       // delete and free the edge
         }
 
-        pn = *nodes;
-        nodes = &((*nodes)->next);
+        pn = nodes;
+        nodes = (nodes)->next;
         free(pn);   // delete and free the node
          
     }
