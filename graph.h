@@ -4,31 +4,33 @@
 typedef struct GRAPH_NODE_ *pnode;;
 
 typedef struct edge_ {
-
     int weight;
     pnode endpoint;
     struct edge_ *next;
-
 } edge, *pedge;
 
 
 typedef struct GRAPH_NODE_ {
-
     int node_num;
     pedge edges;
     struct GRAPH_NODE_ *next;
-
+    //int seq;
 } node, *pnode;
 
-void build_graph_cmd(pnode *head, int size, char **ch);
-void insert_node_cmd(pnode *head, char **ch);
-void add_edges_to_node(pnode *head, pnode *node, int id, char **ch);
-void delete_node_cmd(pnode *head, char **ch);
-void printGraph_cmd(pnode head); //for self debug
+void build_graph_cmd(pnode *head);
+void insert_node_cmd(pnode *head);
+void delete_node_cmd(pnode *head);
 void deleteGraph_cmd(pnode* head);
-void shortsPath_cmd(pnode head, char **ch);
-void TSP_cmd(pnode head, char **ch);
+void shortsPath_cmd(pnode head);
+void TSP_cmd(pnode head);
 int toNum(char **data);
-void TSP_cmd2(pnode head, char **ch);
+pnode newnode(int k, pnode next);
+pnode find_node(int data, pnode head);
+pnode generate(int k);
+void remove_out_edges(pnode here);
+void remove_edge_to(int data, pnode here);
+pnode insert_node(int data, pnode *head);
+pedge new_edge(int weight, pedge next, pnode dest);
+
 
 #endif

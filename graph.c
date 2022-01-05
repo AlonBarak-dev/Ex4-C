@@ -1,304 +1,173 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <limits.h>
 #include "graph.h"
+#include <stdlib.h>
+#include <float.h>
+#include <limits.h>
 
 
-int toNum(char **data){
-
-    char *ptr = *data;      // a pointer to the data pointer
-    char arr[6];        // the array which save the chars
-    int i = 0;
-    while ((*ptr != ' ') && (*ptr != '\n'))     // loop until a space or EOF is located
-    {
-        arr[i] = *ptr;
-        ptr++;
-        i++;
-    }
-    if (i < 6)
-    {
-        arr[i] = '\0';      // tells atoi to stop
-    }
-    
-    
-    int number = atoi(arr);     // convert the char array to a number
-    ptr++;
-    *data = ptr;
-
-    return number;
+pnode newnode(int k, pnode next){
+    pnode p = (pnode) malloc(sizeof(node));
+    p->node_num = k;
+    p->next = next;
+    p->edges = NULL;
+    return p;
 }
 
-void printGraph_cmd(pnode head){
-    /*
-    printing the graph for self debug reasons
-    */
-    pnode ptr = NULL;
-    ptr = head;
-    pedge edges = NULL;
-    while (ptr != NULL)
-    {
-        edges = (*ptr).edges;
-        printf("node number: %d\n", ptr->node_num);
-        while (edges != NULL)
-        {
-            printf("dest: %d    ,   ", edges->endpoint->node_num);
-            printf("weight: %d\n", edges->weight);
-            edges = edges->next;
+pnode find_node(int data, pnode head){
+    while (head){
+        if (head->node_num == data){
+            return head;
         }
-        ptr = ptr->next;
+        head = head->next;
+    }
+    return NULL;
+}
+
+pnode generate(int k){
+    pnode head = NULL;
+    for (int i=k-1;i>=0;i--){
+        head = newnode(i,head);
+    }
+    return head;
+}
+
+void remove_out_edges(pnode here){
+    pedge next = here->edges;
+    while(next){
+        pedge prev = next;
+        next = next->next;
+        free(prev);
     }
 }
 
-void build_graph_cmd(pnode *head, int size, char **ch){
-
-
-    char *chptr = *ch;
-    // in case the malloc returned NULL
-    if (!head)
-    {
-        printf("Couldn't allocate memory for the head of the graph");
-        exit(0);
-    }
-
-    if(size == 0){      // in case the graph is size 0, return and do nothing
-        return;
-    }
-    
-    // allocate memory for all nodes and connect them to each other
-    node **cpy = NULL;
-    cpy = head;
-    for (int i = 0; i < size-1; i++)
-    {
-        (*cpy)->next = (pnode)malloc(sizeof(node));
-        cpy = &((*cpy)->next);
-    }
-
-    node *ptr = *head;
-    node *next = NULL;
-
-    for (int i = 0; i < size; i++)
-    {
-        if (i > size-2)
-        {
-            next = NULL;        // last node in the graph points to NULL
+void remove_edge_to(int data, pnode here){
+    pedge check_edge = here->edges;
+    if(check_edge){
+        if (check_edge->endpoint->node_num == data){
+            pedge delete = check_edge;
+            here->edges = check_edge->next;
+            free(delete);
+            return;
         }
-        else{
-            next = (*ptr).next;
+        while(check_edge->next != NULL){
+            if (check_edge->next->endpoint->node_num == data){
+                pedge delete = check_edge->next;
+                check_edge->next = delete->next;
+                free(delete);
+                return;
+            }
+            check_edge = check_edge->next;
         }
-        
-        // define the node values
-        (*ptr).node_num = i;
-        (*ptr).next = next;
-        (*ptr).edges = NULL;
-
-        ptr = ptr->next;    // move to the next node
     }
+}
 
-    node *ptr2 = NULL;
-    while (*chptr == 'n')
+pnode insert_node(int data, pnode *head){
+    pnode *p = head;
+    while ((*p)->next)
     {
-        ptr2 = *head;
-        chptr += 2;
-        int node_id = toNum(&chptr);        // the node we will add edges to
-        while ((ptr2->node_num != node_id))
-        {
-            ptr2 = (*ptr2).next;
+        if((*p)->node_num< data && (*p)->next->node_num> data){
+            pnode new = newnode(data,(*p)->next);
+            (*p)->next = new;
+            return new;
         }
-
-        add_edges_to_node(head, &ptr2, node_id, &chptr);    // add edges to the node
-        
+        p=&((*p)->next);
     }
-    
-    *ch = chptr;    // forward the data pointer to the new position
+    pnode new = newnode(data,(*p)->next);
+    (*p)->next = new;
+    return new;
 }
 
 
-void add_edges_to_node(pnode *head, pnode *node, int id, char **ch){
+pedge new_edge(int weight, pedge next, pnode dest){
+    pedge p = (pedge) malloc(sizeof(edge));
+    p->endpoint = dest;
+    p->next = next;
+    p->weight = weight;
+    return p;
+}
 
-    char *chptr = *ch;
-    edge *edges = NULL;
 
-    if ((*chptr <= '9') && (*chptr >= '0'))
-    {
-        edges = (pedge)malloc(sizeof(edge));    // the node have edges
-        (*node)->edges = edges;
+
+void build_graph_cmd(pnode *head){
+    int i;
+    scanf("%d", &i);
+    pnode here = find_node(i, *head);
+    pedge prev = NULL;
+    while(scanf("%d", &i)==1){
+        pnode dest = find_node(i, *head);
+        scanf("%d", &i);
+        prev = new_edge(i,prev,dest);
+    }
+    here->edges = prev;
+}
+
+
+void insert_node_cmd(pnode *head){
+    int i;
+    scanf("%d", &i);
+    pnode here = find_node(i, *head);
+    if (*head == NULL){
+        *head = newnode(i, NULL);
+        here = *head;
+    }
+    else if(here != NULL){
+        remove_out_edges(here);
     }
     else{
-        (*node)->edges = NULL;  // the node dont have edges
-        return;
+        here = insert_node(i, head);
     }
-
-    while ((*chptr >= '0') && (*chptr <= '9'))
-    {
-        int dest = toNum(&chptr);   // the dest node
-        pnode dst = NULL;
-        dst = *head;
-        while ((*dst).node_num != dest)
-        {
-            dst = (*dst).next;      // the endpoint node of the edge
-        }
-
-        int weight = toNum(&chptr);     // the weight of the edge
-
-        (*edges).endpoint = dst;
-        (*edges).weight = weight;
-        if (*chptr == '\0')
-        {
-            break;
-        }
-        if ((*chptr <= '9') && (*chptr >= '0'))     // there is another edge
-        {
-            (*edges).next = (pedge)malloc(sizeof(edge));
-            edges = (*edges).next;
-        }
-        else{
-            (edges)->next = NULL;
-        }
+    pedge prev = NULL;
+    while(scanf("%d", &i)==1){
+        pnode dest = find_node(i, *head);
+        scanf("%d", &i);
+        prev = new_edge(i,prev,dest);
     }
-    *ch = chptr;        // forward the data pointer to the new position
+    here->edges = prev;
 }
 
 
-void deleteGraph_cmd(pnode *head){
-
-
-    if(!head){      // base case
-        return;
-    }
-
-    // initialize pointers
-    pnode nodes = NULL;
-    nodes = *head;
-    pedge edges = NULL;
-    pnode pn = NULL;
-    pedge pe = NULL;
-
-    while (nodes != NULL)
-    {
-        edges = (nodes)->edges;  // the edges of the node
-        while (edges != NULL)
-        {
-            pe = edges;
-            edges = (edges)->next;
-            free(pe);       // delete and free the edge
-        }
-
-        pn = nodes;
-        nodes = (nodes)->next;
-        free(pn);   // delete and free the node
-         
-    }
-}
-
-
-void insert_node_cmd(pnode *head, char **ch){
-
-    char *chptr = *ch;
-    // initilaize pointers
-    pnode ptr2 = NULL;
-    ptr2 = *head;
-    pedge *edges = NULL;
-    pedge pe = NULL;
-
-    int node_id = toNum(&chptr);        // the id of the new node
-
-    while (((*ptr2).node_num != node_id) && ((*ptr2).next != NULL))     // search for the node in the graph
-    {
-        ptr2 = (*ptr2).next;
-    }
-    if (((*ptr2).next ==  NULL) && ((*ptr2).node_num != node_id))       // if the node is a new node
-    {
-        (*ptr2).next = (pnode)malloc(sizeof(node));
-        ptr2 = (*ptr2).next;
-        (*ptr2).node_num = node_id;
-    }
-    else{           // if the node is a node in the graph
-        edges = &((*ptr2).edges);
-        while ((*edges) != NULL)
-        {
-            pe = *edges;
-            edges = &((*edges)->next);
-            free(pe);
-        }
-    }
-    
-    add_edges_to_node(head, &ptr2, node_id, &chptr);        // add edges to the node
-    *ch = chptr;        // forward the data pointer 
-}
-
-
-void delete_node_cmd(pnode *head, char **ch){
-
-    char *chptr = *ch;
-    int node_id = toNum(&chptr);        // the node we want to delete
-
-    pnode *ptr = NULL, node = NULL;
-    pedge *edges = NULL, pne = NULL;
-    ptr = head;
-    while (*ptr != NULL)
-    {
-        if ((*ptr)->node_num == node_id)        // delete the edges of the node
-        {
-            edges = &((*ptr)->edges);
-            while (*edges != NULL)
-            {
-                pne = *edges;
-                *edges = (*edges)->next;
-                free(pne);
-            }
-            node = *ptr;
-            ptr = &((*ptr)->next);
-            continue;
-        }
-
-        // do if the current node is not the desired node
-        edges = &((*ptr)->edges);
-        
-        // delete edges from any node to node_id 
-        if (*edges != NULL)
-        {
-            while ((*edges)->next != NULL)
-            {
-                if ((*(*(*edges)->next).endpoint).node_num == node_id)
-                {
-                    pne = (*edges)->next;
-                    (*edges)->next = (*(*edges)->next).next;
-                    free(pne);
-                    break;
-                }
-                else{
-                    edges = &((*edges)->next);
-                }
-                
-            }
-            // in case there is only one edge to some node, if its to node_id then delete
-            edges = &((*ptr)->edges);
-            if ((*(*edges)->endpoint).node_num == node_id)
-            {
-                pne = *edges;
-                *edges = (*edges)->next;
-                free(pne);
-            }
-        }
-        ptr = &((*ptr)->next);      // forward the nodes pointer
-    }
-
-    pnode *ptr2 = head;
-    if ((*ptr2)->node_num == node_id)
-    {
-        *ptr2 = (*ptr2)->next;
+void delete_node_cmd(pnode *head){
+    int i;
+    scanf("%d", &i);
+    pnode check_node = *head;
+    pnode delete = NULL;
+    if (check_node->node_num == i){
+        head = &(check_node->next);
+        delete = check_node;
     }
     else{
-        while ((*ptr2)->next->node_num != node_id)
-        {
-            ptr2 = &((*ptr2)->next);
+        while(check_node->next){
+            if (check_node->next->node_num == i){
+                delete = check_node->next;
+                check_node->next = delete->next;
+                break;
+            }
+            check_node= check_node->next;
         }
-        (*ptr2)->next = ((*ptr2)->next)->next;
     }
-    free(node);
-    
-    *ch = chptr;        // forward the data pointer
+    check_node = *head;
+    while(check_node){
+        remove_edge_to(i, check_node);
+        check_node = check_node->next;
+    }
+    remove_out_edges(delete);
+    free(delete);
 }
+
+
+
+void deleteGraph_cmd(pnode* head){
+    pnode here = *head;
+    while(here){
+        remove_out_edges(here);
+        pnode delete = here;
+        here = here->next;
+        free(delete);
+    }
+}
+
+
+
 
 int min(int a, int b){
     /*
@@ -370,8 +239,6 @@ int findMin(int distance[], int visited[], int n){
     }
     return w;
 }
-
-
 
 
 
@@ -462,17 +329,19 @@ int dijkstra(pnode head, int src, int dest){
 
 
 
-void shortsPath_cmd(pnode head, char **ch){
+void shortsPath_cmd(pnode head){
     /*
     this method print the shortes path weight 
     from node src to node dest using
     dijkstra algorithm.
     time complexity of O(n*n)
     */
-    char *chptr = *ch;
-
-    int src = findIndex(head,toNum(&chptr));        // changed
-    int dest = findIndex(head,toNum(&chptr));       // changed
+    
+    int s = 0;
+    scanf("%d", &s);
+    int src = findIndex(head, s);        // changed
+    scanf("%d", &s);
+    int dest = findIndex(head,s);       // changed
 
     int weight = dijkstra(head, src, dest);
 
@@ -483,7 +352,7 @@ void shortsPath_cmd(pnode head, char **ch){
     
 
     printf("Dijkstra shortest path: %d\n", weight);
-    *ch = chptr;
+    
 }
 
 
@@ -535,8 +404,7 @@ void permute(pnode head, int cities[], int start, int end, int size, int* fsum){
 
 
 
-void TSP_cmd2(pnode head, char **ch){
-    char *chptr = *ch;
+void TSP_cmd(pnode head){
     pnode counter = NULL;
     counter = head;
     int size = 0;       // number of nodes in the graph
@@ -547,14 +415,16 @@ void TSP_cmd2(pnode head, char **ch){
         counter = counter->next;
         size++;
     }
-
-    int p = toNum(&chptr);      //number of cities to visit in tsp
+    int p = 0;      //number of cities to visit in tsp
+    scanf("%d", &p);
     int cities[p];  
     int i = 0;
     // receive the list of the cities from the user
-    while ((*chptr >= '0') && (*chptr <= '9'))
+    while (i < p)
     {
-        cities[i] = toNum(&chptr);
+        int city = 0;
+        scanf("%d",&city);
+        cities[i] = city;
         i++;
     }
 
@@ -567,9 +437,4 @@ void TSP_cmd2(pnode head, char **ch){
     }
     printf("TSP shortest path: %d\n", fsum);
 
-    *ch = chptr;
 }
-
-
-
-

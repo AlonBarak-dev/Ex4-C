@@ -1,79 +1,50 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include "graph.h"
+#include <stdlib.h>
+#include <float.h>
+#include <limits.h>
 
-void build_graph_cmd(pnode *head, int size, char **ch);
-void insert_node_cmd(pnode *head, char **ch);
-void add_edges_to_node(pnode *head, pnode *node, int id, char **ch);
-void delete_node_cmd(pnode *head, char **ch);
-void printGraph_cmd(pnode head); //for self debug
+
+
+void build_graph_cmd(pnode *head);
+void insert_node_cmd(pnode *head);
+void delete_node_cmd(pnode *head);
 void deleteGraph_cmd(pnode* head);
-void shortsPath_cmd(pnode head, char **ch);
-void TSP_cmd(pnode head, char **ch);
-int toStr(char **data);
-void TSP_cmd2(pnode head, char **ch);
+void shortsPath_cmd(pnode head);
+void TSP_cmd(pnode head);
+pnode generate(int k);
 
 
 
 int main(){
-
-
-    char data[10000] = {'\0'};
-    fgets(data,10000,stdin); // gets the input
-    char *ch = data;
+    char ch;
+    int k;
     pnode head = NULL;
-
-    while ((*ch != '\n') && (*ch != EOF) && (*ch != '\0'))
-    {
-        
-        if (*ch == 'A')
-        {
-            if (head)
-            {
-                deleteGraph_cmd(&head);
-            }
-            ch += 2;
-            int size = toNum(&ch);
-            head = (pnode)malloc(sizeof(node));
-            build_graph_cmd(&head, size, &ch);
-
+    int end_of_file = 0;
+    while(end_of_file!=EOF){
+        end_of_file = scanf("%c", &ch);
+        if (ch == 'A'){
+            deleteGraph_cmd(&head);
+            scanf("%d", &k);
+            head = generate(k);
         }
-
-        if (*ch == 'B')
-        {
-            ch += 2;
-            insert_node_cmd(&head, &ch);
+        if (ch == 'n'){
+            build_graph_cmd(&head);
         }
-
-        if (*ch == 'D')
-        {
-            ch += 2;
-            delete_node_cmd(&head, &ch);
+        if (ch == 'B'){
+            insert_node_cmd(&head);
         }
-        
-        if (*ch == 'S')
-        {
-            ch += 2;
-            shortsPath_cmd(head, &ch);
+        if (ch =='S'){
+            shortsPath_cmd(head);
         }
-
-        if (*ch == 'T')
-        {
-            // printGraph_cmd(head);
-            ch += 2;
-            TSP_cmd2(head, &ch);
+        if (ch =='D'){
+            delete_node_cmd(&head);
         }
-        
-        
-        
-        
-
+        if (ch =='T'){
+            TSP_cmd(head);
+        }
         
     }
-
-    
-
-
     deleteGraph_cmd(&head);
     return 0;
 }
