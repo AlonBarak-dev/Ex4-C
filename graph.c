@@ -351,7 +351,7 @@ void shortsPath_cmd(pnode head){
     }
     
 
-    printf("Dijkstra shortest path: %d\n", weight);
+    printf("Dijskstra shortest path: %d \n", weight);
     
 }
 
@@ -435,6 +435,6 @@ void TSP_cmd(pnode head){
     {
         fsum = -1;
     }
-    printf("TSP shortest path: %d\n", fsum);
+    printf("TSP shortest path: %d \n", fsum);
 
 }
