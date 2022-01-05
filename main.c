@@ -45,6 +45,7 @@ int main(){
         }
         
     }
+    printf("\n");
     deleteGraph_cmd(&head);
     return 0;
 }
