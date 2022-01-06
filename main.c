@@ -12,40 +12,34 @@ void delete_node_cmd(pnode *head);
 void deleteGraph_cmd(pnode* head);
 void shortsPath_cmd(pnode head);
 void TSP_cmd(pnode head);
-pnode allocate_graph(int size);
+pnode generate(int k);
 
 
 
 int main(){
-
     char ch;
-    int size;
+    int k;
     pnode head = NULL;
-    
-    while(scanf("%c", &ch) != EOF){
-
+    int end_of_file = 0;
+    while(end_of_file!=EOF){
+        end_of_file = scanf("%c", &ch);
         if (ch == 'A'){
             deleteGraph_cmd(&head);
-            scanf("%d", &size);
-            head = allocate_graph(size);
+            scanf("%d", &k);
+            head = generate(k);
         }
-
         if (ch == 'n'){
             build_graph_cmd(&head);
         }
-
         if (ch == 'B'){
             insert_node_cmd(&head);
         }
-
         if (ch =='S'){
             shortsPath_cmd(head);
         }
-
         if (ch =='D'){
             delete_node_cmd(&head);
         }
-
         if (ch =='T'){
             TSP_cmd(head);
         }
