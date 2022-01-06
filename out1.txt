@@ -1,0 +1,2 @@
+TSP shortest path: 6 
+Dijskstra shortest path: 3 
