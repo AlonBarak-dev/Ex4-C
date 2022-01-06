@@ -11,4 +11,4 @@ graph.o: graph.c
 
 
 clean:
-	rm -f graph
+	rm -f *.o graph

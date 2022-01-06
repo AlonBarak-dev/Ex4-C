@@ -12,7 +12,7 @@ void delete_node_cmd(pnode *head);
 void deleteGraph_cmd(pnode* head);
 void shortsPath_cmd(pnode head);
 void TSP_cmd(pnode head);
-pnode generate(int k);
+pnode allocate_graph(int k);
 
 
 
@@ -26,7 +26,7 @@ int main(){
         if (ch == 'A'){
             deleteGraph_cmd(&head);
             scanf("%d", &k);
-            head = generate(k);
+            head = allocate_graph(k);
         }
         if (ch == 'n'){
             build_graph_cmd(&head);

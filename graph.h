@@ -23,13 +23,13 @@ void deleteGraph_cmd(pnode* head);
 void shortsPath_cmd(pnode head);
 void TSP_cmd(pnode head);
 int toNum(char **data);
-pnode newnode(int k, pnode next);
+pnode allocate_node(int k, pnode next);
 pnode find_node(int data, pnode head);
-pnode generate(int k);
+pnode allocate_graph(int k);
 void remove_out_edges(pnode here);
 void remove_edge_to(int data, pnode here);
 pnode insert_node(int data, pnode *head);
-pedge new_edge(int weight, pedge next, pnode dest);
+pedge allocate_edge(int weight, pedge next, pnode dest);
 
 
 #endif
