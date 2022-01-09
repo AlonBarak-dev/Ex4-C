@@ -17,34 +17,50 @@ pnode allocate_graph(int k);
 
 
 int main(){
-    char ch;
-    int k;
+    
+    char curr;
+    int size;
+    
     pnode head = NULL;
-    int end_of_file = 0;
-    while(end_of_file!=EOF){
-        end_of_file = scanf("%c", &ch);
-        if (ch == 'A'){
+    int exit = 0;   // variable that tells whem to program has ended
+    
+    while(exit != EOF){ // loop until the end of the file has been reached
+        
+        exit = scanf("%c", &curr);
+        
+        if (curr == 'A'){
             deleteGraph_cmd(&head);
-            scanf("%d", &k);
-            head = allocate_graph(k);
+            scanf("%d", &size);
+            head = allocate_graph(size);
         }
-        if (ch == 'n'){
+        
+        if (curr == 'n'){
             build_graph_cmd(&head);
         }
-        if (ch == 'B'){
+        
+        if (curr == 'B'){
             insert_node_cmd(&head);
         }
-        if (ch =='S'){
-            shortsPath_cmd(head);
-        }
-        if (ch =='D'){
+        
+        if (curr =='D'){
             delete_node_cmd(&head);
         }
-        if (ch =='T'){
+        
+        if (curr =='T'){
             TSP_cmd(head);
+        }
+
+        if (curr =='S'){
+            shortsPath_cmd(head);
         }
         
     }
-    deleteGraph_cmd(&head);
+
+
+
+
+
+
+    deleteGraph_cmd(&head); // free the graph when done using
     return 0;
 }
